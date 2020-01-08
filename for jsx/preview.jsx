@@ -174,10 +174,12 @@ export default {
       }
       this.effect = false;
     },
-    leaveImg() {
+    leaveImg(e) {
+      if (e.touches.length > 0) return;
+
       // 若完成单图片拖动
       if (this.scale > 1) {
-        const { imgListLen, imgDiffX, imgDiffY, trueWidth, trueHeight } = this;
+        const { imgListLen, imgDiffX, imgDiffY, trueWidth, trueHeight, imgDiffInitX, imgDiffInitY } = this;
         const leftMax = (trueWidth * (this.scale - 1) * 0.5) / this.scale;
         const rightMin = -leftMax;
 
@@ -206,6 +208,9 @@ export default {
             // 右侧超出边界，放手回正
             this.imgDiffX = rightMin;
           }
+        } else if (imgDiffX === imgDiffInitX && imgDiffY === imgDiffInitY) {
+          // 即使缩放了，无滑动也关闭
+          this.hide();
         }
 
         // 上下边界判断
@@ -312,6 +317,8 @@ export default {
       }
     },
     cancelTouchScale(e) {
+      if (e.touches.length > 0) return;
+
       this.effect = true;
       this.touches = [];
 
